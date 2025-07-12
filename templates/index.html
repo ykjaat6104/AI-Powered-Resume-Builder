@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Resume Builder - AI Powered</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <meta name="description" content="Create professional resumes with AI-powered assistance. Beautiful templates, smart suggestions, and instant PDF export.">
+</head>
+<body>
+    <!-- Professional Background Animation -->
+    <div class="bg-shapes">
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+    </div>
+
+    <div class="container">
+        <!-- Enhanced Professional Header -->
+        <header class="header">
+            <div class="header-brand">
+                <h1><i class="fas fa-file-alt"></i> Professional Resume Builder</h1>
+                <p class="header-subtitle">AI-Powered • Professional Templates • Instant Export</p>
+            </div>
+            <div class="header-buttons">
+                <button id="loadResumeBtn" class="btn btn-secondary" onclick="resumeBuilder.loadResume()">
+                    <i class="fas fa-folder-open"></i> Load Resume
+                </button>
+                <button id="saveBtn" class="btn btn-primary" onclick="resumeBuilder.saveResume()">
+                    <i class="fas fa-save"></i> Save Draft
+                </button>
+                <button id="livePreviewBtn" class="btn btn-success" onclick="openLivePreview()">
+                    <i class="fas fa-eye"></i> Preview
+                </button>
+                <button id="exportBtn" class="btn btn-outline" onclick="resumeBuilder.exportToPDF()">
+                    <i class="fas fa-download"></i> Export PDF
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content with Clean 2-Partition Layout -->
+        <div class="main-content">
+            <div class="content-layout">
+                <!-- Left Partition: All Form Sections -->
+                <div class="form-section">
+                    <form id="resumeForm">
+                        <div class="form-container">
+                            <!-- Personal Information Section -->
+                            <div class="section">
+                                <h2><i class="fas fa-user"></i> Personal Information</h2>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="name">Full Name *</label>
+                                        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="title">Professional Title</label>
+                                        <input type="text" id="title" name="title" placeholder="e.g., Senior Software Engineer">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="email">Email Address *</label>
+                                        <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone">Phone Number *</label>
+                                        <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="address">Location</label>
+                                        <input type="text" id="address" name="address" placeholder="City, State, Country">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="website">Website/Portfolio</label>
+                                        <input type="url" id="website" name="website" placeholder="https://yourwebsite.com">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="summary">Professional Summary *</label>
+                                    <textarea id="summary" name="summary" rows="4" placeholder="Write a compelling professional summary that highlights your key qualifications, experience, and career objectives..." required></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Social Media Links Section -->
+                            <div class="section">
+                                <h2><i class="fas fa-share-alt"></i> Social Media & Links</h2>
+                                <p class="text-muted" style="margin-bottom: var(--space-6);">Add your professional social media profiles and portfolio links. These will appear prominently in your resume.</p>
+                                <div class="social-links-grid">
+                                    <div class="social-link-item">
+                                        <div class="social-icon linkedin">
+                                            <i class="fab fa-linkedin"></i>
+                                        </div>
+                                        <input type="url" class="social-link-input" id="linkedin" name="linkedin" placeholder="LinkedIn profile URL">
+                                    </div>
+                                    <div class="social-link-item">
+                                        <div class="social-icon github">
+                                            <i class="fab fa-github"></i>
+                                        </div>
+                                        <input type="url" class="social-link-input" id="github" name="github" placeholder="GitHub profile URL">
+                                    </div>
+                                    <div class="social-link-item">
+                                        <div class="social-icon twitter">
+                                            <i class="fab fa-twitter"></i>
+                                        </div>
+                                        <input type="url" class="social-link-input" id="twitter" name="twitter" placeholder="Twitter profile URL">
+                                    </div>
+                                    <div class="social-link-item">
+                                        <div class="social-icon instagram">
+                                            <i class="fab fa-instagram"></i>
+                                        </div>
+                                        <input type="url" class="social-link-input" id="instagram" name="instagram" placeholder="Instagram profile URL">
+                                    </div>
+                                    <div class="social-link-item">
+                                        <div class="social-icon behance">
+                                            <i class="fab fa-behance"></i>
+                                        </div>
+                                        <input type="url" class="social-link-input" id="behance" name="behance" placeholder="Behance portfolio URL">
+                                    </div>
+                                    <div class="social-link-item">
+                                        <div class="social-icon dribbble">
+                                            <i class="fab fa-dribbble"></i>
+                                        </div>
+                                        <input type="url" class="social-link-input" id="dribbble" name="dribbble" placeholder="Dribbble profile URL">
+                                    </div>
+                                    <div class="social-link-item">
+                                        <div class="social-icon youtube">
+                                            <i class="fab fa-youtube"></i>
+                                        </div>
+                                        <input type="url" class="social-link-input" id="youtube" name="youtube" placeholder="YouTube channel URL">
+                                    </div>
+                                    <div class="social-link-item">
+                                        <div class="social-icon website">
+                                            <i class="fas fa-globe"></i>
+                                        </div>
+                                        <input type="url" class="social-link-input" id="portfolio" name="portfolio" placeholder="Portfolio website URL">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Work Experience Section -->
+                            <div class="section">
+                                <h2><i class="fas fa-briefcase"></i> Professional Experience</h2>
+                                <div id="experienceContainer">
+                                    <!-- Experience items will be added dynamically -->
+                                </div>
+                                <button type="button" id="addExperience" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add Experience
+                                </button>
+                            </div>
+
+                            <!-- Education Section -->
+                            <div class="section">
+                                <h2><i class="fas fa-graduation-cap"></i> Education</h2>
+                                <div id="educationContainer">
+                                    <!-- Education items will be added dynamically -->
+                                </div>
+                                <button type="button" id="addEducation" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add Education
+                                </button>
+                            </div>
+
+                            <!-- Skills Section -->
+                            <div class="section">
+                                <h2><i class="fas fa-cogs"></i> Skills & Expertise</h2>
+                                <div id="skillsContainer">
+                                    <!-- Skills will be added dynamically -->
+                                </div>
+                                <button type="button" id="addSkillBtn" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add Skill
+                                </button>
+                            </div>
+
+                            <!-- Additional Sections -->
+                            <div class="section">
+                                <h2><i class="fas fa-trophy"></i> Additional Sections</h2>
+                                <div class="additional-sections">
+                                    <button type="button" class="btn btn-secondary add-section" data-section="certifications">
+                                        <i class="fas fa-certificate"></i> Add Certifications
+                                    </button>
+                                    <button type="button" class="btn btn-secondary add-section" data-section="projects">
+                                        <i class="fas fa-project-diagram"></i> Add Projects
+                                    </button>
+                                    <button type="button" class="btn btn-secondary add-section" data-section="languages">
+                                        <i class="fas fa-language"></i> Add Languages
+                                    </button>
+                                    <button type="button" class="btn btn-secondary add-section" data-section="awards">
+                                        <i class="fas fa-award"></i> Add Awards
+                                    </button>
+                                </div>
+                                <div id="additionalSectionsContainer">
+                                    <!-- Additional sections will be added dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Right Partition: Template Selection Only -->
+                <div class="templates-sidebar">
+                    <div class="template-container">
+                        <div class="template-section">
+                            <h2><i class="fas fa-palette"></i> Choose Template</h2>
+                            <div class="template-controls">
+                                <button class="btn btn-outline" id="importTemplateBtn" onclick="importTemplate()">
+                                    <i class="fas fa-upload"></i> Import Template
+                                </button>
+                            </div>
+                        
+                        <div class="template-grid">
+                            <!-- Minimal Template -->
+                            <div class="template-card selected" data-template="minimal">
+                                <div class="template-preview minimal">
+                                    <div class="template-example">
+                                        <div class="example-header">
+                                            <div class="example-name">Sarah Johnson</div>
+                                            <div class="example-title">Business Analyst</div>
+                                            <div class="example-contact">
+                                                <span>📧 sarah@email.com</span>
+                                                <span>📱 (555) 123-4567</span>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">💼 EXPERIENCE</div>
+                                            <div class="example-item">
+                                                <div class="example-job-title">Senior Business Analyst</div>
+                                                <div class="example-company">Tech Solutions Inc.</div>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">🛠️ SKILLS</div>
+                                            <div class="example-skills">
+                                                <span class="skill-tag">Data Analysis</span>
+                                                <span class="skill-tag">SQL</span>
+                                                <span class="skill-tag">Excel</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="template-info">
+                                    <div class="template-name">Minimal</div>
+                                    <div class="template-description">Clean serif typography with elegant borders</div>
+                                </div>
+                            </div>
+
+                            <!-- Modern Template -->
+                            <div class="template-card" data-template="modern">
+                                <div class="template-preview modern">
+                                    <div class="template-example">
+                                        <div class="example-header">
+                                            <div class="example-name">Alex Developer</div>
+                                            <div class="example-title">Full Stack Engineer</div>
+                                            <div class="example-contact">
+                                                <span>🌐 alex.dev@email.com</span>
+                                                <span>💻 GitHub: /alexdev</span>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">🚀 EXPERIENCE</div>
+                                            <div class="example-item">
+                                                <div class="example-job-title">Senior Developer</div>
+                                                <div class="example-company">Innovation Labs</div>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">⚡ TECH STACK</div>
+                                            <div class="example-skills">
+                                                <span class="skill-tag">React</span>
+                                                <span class="skill-tag">Node.js</span>
+                                                <span class="skill-tag">AWS</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="template-info">
+                                    <div class="template-name">Modern</div>
+                                    <div class="template-description">Bold gradient design with contemporary typography</div>
+                                </div>
+                            </div>
+
+                            <!-- Creative Template -->
+                            <div class="template-card" data-template="creative">
+                                <div class="template-preview creative">
+                                    <div class="template-example">
+                                        <div class="example-header">
+                                            <div class="example-name">Maya Designer</div>
+                                            <div class="example-title">Creative Director</div>
+                                            <div class="example-contact">
+                                                <span>🎨 maya@design.com</span>
+                                                <span>📷 Instagram: @maya_designs</span>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">✨ EXPERIENCE</div>
+                                            <div class="example-item">
+                                                <div class="example-job-title">Art Director</div>
+                                                <div class="example-company">Creative Studios</div>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">🎯 SKILLS</div>
+                                            <div class="example-skills">
+                                                <span class="skill-tag">Photoshop</span>
+                                                <span class="skill-tag">Illustrator</span>
+                                                <span class="skill-tag">Figma</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="template-info">
+                                    <div class="template-name">Creative</div>
+                                    <div class="template-description">Vibrant design with colorful accents and modern layout</div>
+                                </div>
+                            </div>
+
+                            <!-- Professional Template -->
+                            <div class="template-card" data-template="professional">
+                                <div class="template-preview professional">
+                                    <div class="template-example">
+                                        <div class="example-header">
+                                            <div class="example-name">James Wilson</div>
+                                            <div class="example-title">Senior Manager</div>
+                                            <div class="example-contact">
+                                                <span>📧 j.wilson@corporate.com</span>
+                                                <span>🔗 LinkedIn: /in/jameswilson</span>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">📈 EXPERIENCE</div>
+                                            <div class="example-item">
+                                                <div class="example-job-title">Operations Manager</div>
+                                                <div class="example-company">Global Corp</div>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">🎯 EXPERTISE</div>
+                                            <div class="example-skills">
+                                                <span class="skill-tag">Leadership</span>
+                                                <span class="skill-tag">Strategy</span>
+                                                <span class="skill-tag">Operations</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="template-info">
+                                    <div class="template-name">Professional</div>
+                                    <div class="template-description">Classic corporate design with structured layout</div>
+                                </div>
+                            </div>
+
+                            <!-- Elegant Template -->
+                            <div class="template-card" data-template="elegant">
+                                <div class="template-preview elegant">
+                                    <div class="template-example">
+                                        <div class="example-header">
+                                            <div class="example-name">Isabella Chen</div>
+                                            <div class="example-title">Marketing Director</div>
+                                            <div class="example-contact">
+                                                <span>✉️ isabella@marketing.com</span>
+                                                <span>🌟 Portfolio: isabella.design</span>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">💫 EXPERIENCE</div>
+                                            <div class="example-item">
+                                                <div class="example-job-title">Brand Manager</div>
+                                                <div class="example-company">Luxury Brands Inc.</div>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">🏆 SKILLS</div>
+                                            <div class="example-skills">
+                                                <span class="skill-tag">Branding</span>
+                                                <span class="skill-tag">Strategy</span>
+                                                <span class="skill-tag">Analytics</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="template-info">
+                                    <div class="template-name">Elegant</div>
+                                    <div class="template-description">Sophisticated serif fonts with refined spacing</div>
+                                </div>
+                            </div>
+
+                            <!-- Tech Template -->
+                            <div class="template-card" data-template="tech">
+                                <div class="template-preview tech">
+                                    <div class="template-example">
+                                        <div class="example-header">
+                                            <div class="example-name">DevOps_Master_2024</div>
+                                            <div class="example-title">Cloud Architect</div>
+                                            <div class="example-contact">
+                                                <span>⚡ tech@cloudops.dev</span>
+                                                <span>🐙 GitHub: /cloudmaster</span>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">🔧 EXPERIENCE</div>
+                                            <div class="example-item">
+                                                <div class="example-job-title">DevOps Engineer</div>
+                                                <div class="example-company">Tech Innovations</div>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">☁️ STACK</div>
+                                            <div class="example-skills">
+                                                <span class="skill-tag">Kubernetes</span>
+                                                <span class="skill-tag">Docker</span>
+                                                <span class="skill-tag">AWS</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="template-info">
+                                    <div class="template-name">Tech</div>
+                                    <div class="template-description">Monospace fonts with tech-inspired cyan accents</div>
+                                </div>
+                            </div>
+
+                            <!-- Corporate Template -->
+                            <div class="template-card" data-template="corporate">
+                                <div class="template-preview corporate">
+                                    <div class="template-example">
+                                        <div class="example-header">
+                                            <div class="example-name">Robert Executive</div>
+                                            <div class="example-title">Chief Operating Officer</div>
+                                            <div class="example-contact">
+                                                <span>📧 r.executive@corp.com</span>
+                                                <span>🏢 Corporate Plaza, Suite 1001</span>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">🏛️ LEADERSHIP</div>
+                                            <div class="example-item">
+                                                <div class="example-job-title">VP Operations</div>
+                                                <div class="example-company">Fortune 500 Company</div>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">📊 EXPERTISE</div>
+                                            <div class="example-skills">
+                                                <span class="skill-tag">Executive Leadership</span>
+                                                <span class="skill-tag">P&L Management</span>
+                                                <span class="skill-tag">M&A</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="template-info">
+                                    <div class="template-name">Corporate</div>
+                                    <div class="template-description">Executive-level design with professional dark theme</div>
+                                </div>
+                            </div>
+
+                            <!-- Trendy Template -->
+                            <div class="template-card" data-template="trendy">
+                                <div class="template-preview trendy">
+                                    <div class="template-example">
+                                        <div class="example-header">
+                                            <div class="example-name">Zoe Influencer</div>
+                                            <div class="example-title">Social Media Manager</div>
+                                            <div class="example-contact">
+                                                <span>📱 zoe@trending.com</span>
+                                                <span>🎵 TikTok: @zoetrends</span>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">🌟 EXPERIENCE</div>
+                                            <div class="example-item">
+                                                <div class="example-job-title">Content Creator</div>
+                                                <div class="example-company">Digital Agency</div>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">🚀 PLATFORMS</div>
+                                            <div class="example-skills">
+                                                <span class="skill-tag">Instagram</span>
+                                                <span class="skill-tag">TikTok</span>
+                                                <span class="skill-tag">YouTube</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="template-info">
+                                    <div class="template-name">Trendy</div>
+                                    <div class="template-description">Vibrant orange gradient with modern social media style</div>
+                                </div>
+                            </div>
+
+                            <!-- Academic Template -->
+                            <div class="template-card" data-template="academic">
+                                <div class="template-preview academic">
+                                    <div class="template-example">
+                                        <div class="example-header">
+                                            <div class="example-name">Dr. Maria Santos</div>
+                                            <div class="example-title">Research Scientist</div>
+                                            <div class="example-contact">
+                                                <span>🎓 m.santos@university.edu</span>
+                                                <span>📚 ORCID: 0000-0000-0000-0000</span>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">🔬 RESEARCH</div>
+                                            <div class="example-item">
+                                                <div class="example-job-title">Principal Investigator</div>
+                                                <div class="example-company">Research Institute</div>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">🏆 PUBLICATIONS</div>
+                                            <div class="example-skills">
+                                                <span class="skill-tag">Nature (15)</span>
+                                                <span class="skill-tag">Science (8)</span>
+                                                <span class="skill-tag">Cell (12)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="template-info">
+                                    <div class="template-name">Academic</div>
+                                    <div class="template-description">Scholarly design with green accents for academia</div>
+                                </div>
+                            </div>
+
+                            <!-- Freelancer Template -->
+                            <div class="template-card" data-template="freelancer">
+                                <div class="template-preview freelancer">
+                                    <div class="template-example">
+                                        <div class="example-header">
+                                            <div class="example-name">Luna Creative</div>
+                                            <div class="example-title">Freelance Designer</div>
+                                            <div class="example-contact">
+                                                <span>🎨 hello@lunacreative.io</span>
+                                                <span>🌐 Portfolio: lunacreative.io</span>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">✨ PROJECTS</div>
+                                            <div class="example-item">
+                                                <div class="example-job-title">Brand Identity Designer</div>
+                                                <div class="example-company">150+ Happy Clients</div>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">🎯 SERVICES</div>
+                                            <div class="example-skills">
+                                                <span class="skill-tag">Logo Design</span>
+                                                <span class="skill-tag">Branding</span>
+                                                <span class="skill-tag">Web Design</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="template-info">
+                                    <div class="template-name">Freelancer</div>
+                                    <div class="template-description">Creative purple theme perfect for independent professionals</div>
+                                </div>
+                            </div>
+
+                            <!-- Startup Template -->
+                            <div class="template-card" data-template="startup">
+                                <div class="template-preview startup">
+                                    <div class="template-example">
+                                        <div class="example-header">
+                                            <div class="example-name">Max Entrepreneur</div>
+                                            <div class="example-title">Startup Founder & CEO</div>
+                                            <div class="example-contact">
+                                                <span>🚀 max@disruptive.co</span>
+                                                <span>💡 AngelList: /max-founder</span>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">🎯 VENTURES</div>
+                                            <div class="example-item">
+                                                <div class="example-job-title">Co-Founder & CEO</div>
+                                                <div class="example-company">Disruptive Tech Inc.</div>
+                                            </div>
+                                        </div>
+                                        <div class="example-section">
+                                            <div class="example-section-title">⚡ ACHIEVEMENTS</div>
+                                            <div class="example-skills">
+                                                <span class="skill-tag">$2M Raised</span>
+                                                <span class="skill-tag">Y Combinator</span>
+                                                <span class="skill-tag">Forbes 30u30</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="template-info">
+                                    <div class="template-name">Startup</div>
+                                    <div class="template-description">Bold red gradient design for entrepreneurs and innovators</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Professional Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Processing your resume...</p>
+        </div>
+    </div>
+
+    <!-- Save/Load Modal -->
+    <div id="saveLoadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Save Resume</h3>
+                <button class="modal-close" onclick="resumeBuilder.closeSaveLoadModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="saveSection">
+                    <div class="form-group">
+                        <label for="resumeName">Resume Name</label>
+                        <input type="text" id="resumeName" placeholder="Enter a name for your resume">
+                    </div>
+                    <button class="btn btn-primary" onclick="resumeBuilder.confirmSave()">Save Resume</button>
+                </div>
+                <div id="loadSection" style="display: none;">
+                    <p>Loading saved resumes...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Preview Modal -->
+    <div id="livePreviewModal" class="live-preview-modal" style="display: none;">
+        <div class="modal-backdrop" onclick="closeLivePreview()"></div>
+        <div class="live-preview-container">
+            <div class="live-preview-header">
+                <h3><i class="fas fa-eye"></i> Live Preview</h3>
+                <button class="btn btn-outline" onclick="closeLivePreview()" style="background: rgba(255,255,255,0.2); border-color: white; color: white;">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+            <div class="live-preview-content">
+                <div id="livePreviewContent" class="resume-preview">
+                    <div class="preview-header">
+                        <h1 id="modalPreviewName" class="preview-name">Your Name</h1>
+                        <div id="modalPreviewContact" class="preview-contact"></div>
+                        <div id="modalPreviewSocialLinks" class="preview-social-links" style="display: none;"></div>
+                    </div>
+                    
+                    <div id="modalPreviewSummary" class="preview-section-content" style="display: none;">
+                        <h3>Professional Summary</h3>
+                        <p id="modalPreviewSummaryText"></p>
+                    </div>
+
+                    <div id="modalPreviewExperience" class="preview-section-content">
+                        <h3>Professional Experience</h3>
+                        <div id="modalPreviewExperienceList"></div>
+                    </div>
+
+                    <div id="modalPreviewEducation" class="preview-section-content">
+                        <h3>Education</h3>
+                        <div id="modalPreviewEducationList"></div>
+                    </div>
+
+                    <div id="modalPreviewSkills" class="preview-section-content">
+                        <h3>Skills</h3>
+                        <div id="modalPreviewSkillsList"></div>
+                    </div>
+
+                    <div id="modalPreviewAdditional" class="preview-section-content">
+                        <!-- Additional sections will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input for template import -->
+    <input type="file" id="templateFileInput" accept=".json,.txt,.rtf" style="display: none;" onchange="handleTemplateImport(event)">
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
