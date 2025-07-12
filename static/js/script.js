@@ -1003,12 +1003,17 @@ class ResumeBuilder {
 // Global functions for HTML onclick handlers
 function openLivePreview() {
     const modal = document.getElementById('livePreviewModal');
+    if (!modal) {
+        console.error('Live preview modal not found');
+        return;
+    }
+    
     const formData = resumeBuilder.getFormData();
     
     // Populate modal with form data
     populateModalPreview(formData);
     
-    // Show modal with blur effect
+    // Show modal with proper display
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     
@@ -1017,32 +1022,55 @@ function openLivePreview() {
     if (mainContent) {
         mainContent.style.filter = 'blur(5px)';
         mainContent.style.pointerEvents = 'none';
+        mainContent.style.transition = 'filter 0.3s ease';
     }
+    
+    // Animate modal entrance
+    requestAnimationFrame(() => {
+        modal.style.opacity = '1';
+    });
 }
 
 function closeLivePreview() {
     const modal = document.getElementById('livePreviewModal');
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
+    if (!modal) return;
     
-    // Remove blur from background
-    const mainContent = document.querySelector('.main-content');
-    if (mainContent) {
-        mainContent.style.filter = '';
-        mainContent.style.pointerEvents = '';
-    }
+    // Animate modal exit
+    modal.style.opacity = '0';
+    
+    setTimeout(() => {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+        
+        // Remove blur from background
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            mainContent.style.filter = '';
+            mainContent.style.pointerEvents = '';
+        }
+    }, 200);
 }
 
 function populateModalPreview(data) {
+    // Apply selected template styling
+    const modalPreviewContent = document.getElementById('livePreviewContent');
+    modalPreviewContent.className = `resume-preview ${data.template || resumeBuilder.selectedTemplate}`;
+    
     // Update personal info
-    document.getElementById('modalPreviewName').textContent = data.personalInfo.name || 'Your Name';
+    const nameElement = document.getElementById('modalPreviewName');
+    nameElement.textContent = data.personalInfo.name || 'Your Name';
+    
+    // Add professional title if available
+    if (data.personalInfo.title) {
+        nameElement.innerHTML = `${data.personalInfo.name || 'Your Name'}<br><small style="font-size: 0.6em; font-weight: 400; opacity: 0.8;">${data.personalInfo.title}</small>`;
+    }
     
     // Update contact info
     const contactInfo = [];
-    if (data.personalInfo.email) contactInfo.push(data.personalInfo.email);
-    if (data.personalInfo.phone) contactInfo.push(data.personalInfo.phone);
-    if (data.personalInfo.location) contactInfo.push(data.personalInfo.location);
-    if (data.personalInfo.website) contactInfo.push(data.personalInfo.website);
+    if (data.personalInfo.email) contactInfo.push(`<i class="fas fa-envelope"></i> ${data.personalInfo.email}`);
+    if (data.personalInfo.phone) contactInfo.push(`<i class="fas fa-phone"></i> ${data.personalInfo.phone}`);
+    if (data.personalInfo.location) contactInfo.push(`<i class="fas fa-map-marker-alt"></i> ${data.personalInfo.location}`);
+    if (data.personalInfo.website) contactInfo.push(`<i class="fas fa-globe"></i> ${data.personalInfo.website}`);
     
     document.getElementById('modalPreviewContact').innerHTML = contactInfo.join(' • ');
     
@@ -1082,49 +1110,58 @@ function populateModalPreview(data) {
     
     // Update experience
     const experienceList = document.getElementById('modalPreviewExperienceList');
-    if (data.experiences.length > 0) {
+    const experienceSection = document.getElementById('modalPreviewExperience');
+    if (data.experiences && data.experiences.length > 0) {
+        experienceSection.style.display = 'block';
         experienceList.innerHTML = data.experiences.map(exp => `
-            <div style="margin-bottom: var(--space-4);">
-                <h4 style="margin-bottom: var(--space-1);">${exp.title} at ${exp.company}</h4>
-                <p style="font-size: var(--font-size-sm); color: var(--gray-600); margin-bottom: var(--space-2);">
-                    ${exp.location ? exp.location + ' • ' : ''}${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}
+            <div style="margin-bottom: var(--space-5); padding-bottom: var(--space-4); border-bottom: 1px solid rgba(0,0,0,0.1);">
+                <h4 style="margin-bottom: var(--space-1); font-weight: 600;">${exp.title || 'Position'}</h4>
+                <p style="font-weight: 500; margin-bottom: var(--space-1);">${exp.company || 'Company'}</p>
+                <p style="font-size: 0.875rem; opacity: 0.8; margin-bottom: var(--space-2);">
+                    ${exp.location ? exp.location + ' • ' : ''}${exp.startDate || 'Start'} - ${exp.current ? 'Present' : (exp.endDate || 'End')}
+                    ${exp.type ? ' • ' + exp.type : ''}
                 </p>
-                <div style="white-space: pre-line;">${exp.description}</div>
+                ${exp.description ? `<div style="white-space: pre-line; line-height: 1.6;">${exp.description}</div>` : ''}
             </div>
         `).join('');
     } else {
-        experienceList.innerHTML = '<p>No experience added yet.</p>';
+        experienceSection.style.display = 'none';
     }
     
     // Update education
     const educationList = document.getElementById('modalPreviewEducationList');
-    if (data.education.length > 0) {
+    const educationSection = document.getElementById('modalPreviewEducation');
+    if (data.education && data.education.length > 0) {
+        educationSection.style.display = 'block';
         educationList.innerHTML = data.education.map(edu => `
-            <div style="margin-bottom: var(--space-4);">
-                <h4 style="margin-bottom: var(--space-1);">${edu.degree} in ${edu.field}</h4>
-                <p style="font-size: var(--font-size-sm); color: var(--gray-600); margin-bottom: var(--space-2);">
-                    ${edu.school}${edu.location ? ' • ' + edu.location : ''}
+            <div style="margin-bottom: var(--space-4); padding-bottom: var(--space-3); border-bottom: 1px solid rgba(0,0,0,0.1);">
+                <h4 style="margin-bottom: var(--space-1); font-weight: 600;">${edu.degree || 'Degree'}</h4>
+                ${edu.field ? `<p style="font-weight: 500; margin-bottom: var(--space-1);">${edu.field}</p>` : ''}
+                <p style="font-size: 0.875rem; opacity: 0.8; margin-bottom: var(--space-2);">
+                    ${edu.school || 'School'}${edu.location ? ' • ' + edu.location : ''}
                     ${edu.endYear ? ' • ' + edu.endYear : ''}
                 </p>
-                ${edu.gpa ? `<p style="font-size: var(--font-size-sm);">GPA: ${edu.gpa}</p>` : ''}
-                ${edu.honors ? `<p style="font-size: var(--font-size-sm);">${edu.honors}</p>` : ''}
+                ${edu.gpa ? `<p style="font-size: 0.875rem;">GPA: ${edu.gpa}</p>` : ''}
+                ${edu.honors ? `<p style="font-size: 0.875rem; font-style: italic;">${edu.honors}</p>` : ''}
             </div>
         `).join('');
     } else {
-        educationList.innerHTML = '<p>No education added yet.</p>';
+        educationSection.style.display = 'none';
     }
     
     // Update skills
     const skillsList = document.getElementById('modalPreviewSkillsList');
-    if (data.skills.length > 0) {
+    const skillsSection = document.getElementById('modalPreviewSkills');
+    if (data.skills && data.skills.length > 0) {
+        skillsSection.style.display = 'block';
         skillsList.innerHTML = data.skills.map(skill => 
-            `<span style="display: inline-block; background: var(--gray-100); padding: var(--space-2) var(--space-3); 
-                    margin: var(--space-1); border-radius: var(--radius-md); font-size: var(--font-size-sm);">
-                ${skill.name} (${skill.level})
+            `<span style="display: inline-block; background: rgba(0,0,0,0.1); padding: 0.5rem 1rem; 
+                    margin: 0.25rem; border-radius: 20px; font-size: 0.875rem; font-weight: 500;">
+                ${skill.name || 'Skill'}${skill.level ? ` (${skill.level})` : ''}
             </span>`
         ).join('');
     } else {
-        skillsList.innerHTML = '<p>No skills added yet.</p>';
+        skillsSection.style.display = 'none';
     }
     
     // Update additional sections
@@ -1185,10 +1222,6 @@ function populateModalPreview(data) {
     }
     
     additionalSection.innerHTML = additionalHTML;
-    
-    // Apply selected template styling
-    const previewContent = document.getElementById('livePreviewContent');
-    previewContent.className = `resume-preview ${resumeBuilder.selectedTemplate}`;
 }
 
 function importTemplate() {
