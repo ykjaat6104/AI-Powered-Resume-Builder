@@ -1,3 +1,75 @@
+// Voice Input: Enhanced sensitivity, always show blue 'Listening...' under summary while mic is on
+window.startVoiceInput = function(targetId) {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Sorry, your browser does not support speech recognition.');
+        return;
+    }
+    // Prevent multiple recognitions
+    if (window._voiceRecognition && window._voiceRecognition.listening) {
+        window._voiceRecognition.recognition.stop();
+        return;
+    }
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    // Increase sensitivity: set continuous mode and lower silence threshold if possible
+    recognition.continuous = true;
+    // Note: Web Speech API does not expose direct mic sensitivity, but continuous mode helps
+    window._voiceRecognition = { recognition, listening: true };
+
+    const btn = document.querySelector(`[onclick*="startVoiceInput('${targetId}')"]`);
+    const textarea = document.getElementById(targetId);
+    // Place indicator under the summary block
+    let listeningIndicator = document.getElementById('voice-listening-indicator');
+    if (!listeningIndicator) {
+        listeningIndicator = document.createElement('div');
+        listeningIndicator.id = 'voice-listening-indicator';
+        listeningIndicator.style.marginTop = '6px';
+        listeningIndicator.style.fontWeight = 'bold';
+        listeningIndicator.style.color = '#1976d2';
+        listeningIndicator.style.fontSize = '1rem';
+        // Find the summary form-group and append after it
+        const summaryGroup = textarea.closest('.form-group');
+        if (summaryGroup && summaryGroup.parentElement) {
+            summaryGroup.parentElement.insertBefore(listeningIndicator, summaryGroup.nextSibling);
+        } else {
+            textarea.parentElement.appendChild(listeningIndicator);
+        }
+    }
+    listeningIndicator.textContent = 'Listening...';
+    listeningIndicator.style.display = 'block';
+    if (btn) btn.classList.add('recording');
+
+    let finalTranscript = textarea.value || '';
+    recognition.onresult = function(event) {
+        let interim = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+                finalTranscript += (finalTranscript ? ' ' : '') + event.results[i][0].transcript;
+            } else {
+                interim += event.results[i][0].transcript;
+            }
+        }
+        textarea.value = finalTranscript + (interim ? ' ' + interim : '');
+        textarea.dispatchEvent(new Event('input'));
+    };
+    recognition.onerror = function(event) {
+        listeningIndicator.textContent = 'Voice input error: ' + event.error;
+        listeningIndicator.style.color = '#e74c3c';
+        setTimeout(() => { listeningIndicator.style.display = 'none'; listeningIndicator.style.color = '#1976d2'; }, 2000);
+        if (btn) btn.classList.remove('recording');
+        window._voiceRecognition.listening = false;
+    };
+    recognition.onend = function() {
+        if (btn) btn.classList.remove('recording');
+        listeningIndicator.style.display = 'none';
+        listeningIndicator.style.color = '#1976d2';
+        window._voiceRecognition.listening = false;
+    };
+    recognition.start();
+};
 // Professional Resume Builder JavaScript - Fully Functional Version
 // Enhanced with dropdowns, autocomplete, and dynamic functionality
 

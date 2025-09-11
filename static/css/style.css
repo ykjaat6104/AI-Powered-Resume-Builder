@@ -1,3 +1,11 @@
+/* Voice input button recording state */
+.voice-btn.recording {
+    background: #222 !important;
+    color: #fff !important;
+    border-color: #222 !important;
+    box-shadow: 0 0 0 2px #1976d233;
+    transition: background 0.2s, color 0.2s;
+}
 /* Import Professional Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
 

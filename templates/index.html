@@ -86,7 +86,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="summary">Professional Summary *</label>
-                                    <textarea id="summary" name="summary" rows="4" placeholder="Write a compelling professional summary that highlights your key qualifications, experience, and career objectives..." required></textarea>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <textarea id="summary" name="summary" rows="4" style="flex:1;" placeholder="Write a compelling professional summary that highlights your key qualifications, experience, and career objectives..." required></textarea>
+                                        <button type="button" class="voice-btn" title="Dictate summary" onclick="startVoiceInput('summary')" style="height: 38px; min-width: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-microphone"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
