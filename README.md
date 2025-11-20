@@ -40,6 +40,12 @@
 </tr>
 </table>
 
+
+## ✨ Preview 
+
+<img width="1920" height="1080" alt="Screenshot (49)" src="https://github.com/user-attachments/assets/c89778cb-62f8-47c9-a6a6-e8cf3c42f748" />
+
+
 ## 🌟 Featured Templates
 
 <div align="center">
@@ -51,28 +57,6 @@
 *+ 6 more stunning designs including Startup, Academic, Freelancer, Corporate, Trendy & Minimal*
 
 </div>
-
-## � Quick Start
-
-### **One-Click Setup** (Recommended)
-```bash
-# Windows - Just double-click
-setup.bat
-```
-
-### **Manual Installation**
-```bash
-# 1. Install dependencies
-pip install -r requirements.txt
-
-# 2. Launch application
-python app.py
-
-# 3. Open in browser
-# http://localhost:5000
-```
-
-**That's it!** 🎉 Your resume builder is ready to use.
 
 ## 🛠️ Tech Stack
 
@@ -144,6 +128,29 @@ Each template is carefully crafted for specific industries and roles:
 - **Browser**: Chrome, Firefox, Safari, Edge
 - **OS**: Windows, macOS, Linux
 - **Storage**: 50MB free space
+
+## � Quick Start
+
+### **One-Click Setup** (Recommended)
+```bash
+# Windows - Just double-click
+setup.bat
+```
+
+### **Manual Installation**
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Launch application
+python app.py
+
+# 3. Open in browser
+# http://localhost:5000
+```
+
+**That's it!** 🎉 Your resume builder is ready to use.
+
 
 ## 📜 License
 
